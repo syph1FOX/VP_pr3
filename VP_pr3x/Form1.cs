@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using System.Net.Http.Headers;
+using System.Xml;
 
 namespace VP_pr3x
 {
@@ -51,10 +52,10 @@ namespace VP_pr3x
                 gList = JsonSerializer.Deserialize<List<GNode>>(text, options: options);
             }
             catch
-                {
+            {
                 MessageBox.Show("Не удалось прочитать json файл", "Ошибка");
                 this.Close();
-                }
+            }
 
 
             //добавление семейств грызунов(при первом запуске). можно еще добавить при желании
