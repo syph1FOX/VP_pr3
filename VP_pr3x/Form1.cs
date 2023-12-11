@@ -43,25 +43,24 @@ namespace VP_pr3x
             images.Images.Add(Image.FromFile(Directory.GetCurrentDirectory() + "\\img\\homyak.jpg"));
             //первое изображение
             images.Images.Add(Image.FromFile(Directory.GetCurrentDirectory() + "\\img\\megakapibara.jpg"));
-            using (StreamReader fstream = new StreamReader(Directory.GetCurrentDirectory() + "\\glist.json"))
+
+            try
             {
-                GNode g = new GNode();
-                gList = new List<GNode>();
-                string text = fstream.ReadToEnd();
-                string[] json = text.Split(new char[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (string obj in json)
+                string path = Directory.GetCurrentDirectory() + "\\glist.json";
+                string text = File.ReadAllText(path);
+                gList = JsonSerializer.Deserialize<List<GNode>>(text, options: options);
+            }
+            catch
                 {
-                    string wrap = "{" + obj + "}";
-                    g = JsonSerializer.Deserialize<GNode>(wrap);
-                    gList.Add(g);
+                MessageBox.Show("Не удалось прочитать json файл", "Ошибка");
+                this.Close();
                 }
 
-            }
 
             //добавление семейств грызунов(при первом запуске). можно еще добавить при желании
             //gList = new List<GNode>();
             //GNode temp;
-            //temp = new GNode("Полевки", "Мелкие вредители", "Повсюду", Directory.GetCurrentDirectory()+"\\img\\polevka.jpg", 2, 15);
+            //temp = new GNode("Полевки", "Мелкие вредители", "Повсюду", Directory.GetCurrentDirectory() + "\\img\\polevka.jpg", 2, 15);
             //gList.Add(temp);
             //temp = new GNode("Белки", "Пух", "Лес", Directory.GetCurrentDirectory() + "\\img\\belka.jpg", 3, 10);
             //gList.Add(temp);
@@ -75,6 +74,7 @@ namespace VP_pr3x
             //gList.Add(temp);
             //temp = new GNode("Хомяки", "Пухлячки", "Повсюду", Directory.GetCurrentDirectory() + "\\img\\homyak.jpg", 3, 10);
             //gList.Add(temp);
+
             int i = 0, j;
             this.treeView1.ImageList = images;
             this.treeView1.Nodes[0].ImageIndex = images.Images.Count - 1;
@@ -115,10 +115,7 @@ namespace VP_pr3x
             }
             using (FileStream fstream = new FileStream(path, FileMode.OpenOrCreate))
             {
-                foreach(var g in gList)
-                {
-                    JsonSerializer.Serialize<GNode>(fstream, g, options);
-                }
+                JsonSerializer.Serialize<List<GNode>>(fstream, gList, options);
             }
         }
 
